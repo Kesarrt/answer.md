@@ -10,6 +10,6 @@ const num2 = 10;
 const num3 = 1;
 
 // Calling the function and printing results
-console.log(`Is ${num1} a prime number?`, checkPrime(num1)); // true
-console.log(`Is ${num2} a prime number?`, checkPrime(num2)); // false
-console.log(`Is ${num3} a prime number?`, checkPrime(num3)); // false
+console.log(`Is ${num1} a prime number?`, checkPrime(num1)); 
+console.log(`Is ${num2} a prime number?`, checkPrime(num2)); 
+console.log(`Is ${num3} a prime number?`, checkPrime(num3)); 

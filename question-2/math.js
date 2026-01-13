@@ -15,6 +15,6 @@ export function checkPrime(number) {
         }
     }
 
-    // 3. If no divisors were found, it is prime
+  
     return true;
 }
