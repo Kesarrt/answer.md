@@ -1,0 +1,75 @@
+1. Node.js Architecture
+Node.js is basically a runtime that lets us run JavaScript on a computer, not just in a browser. It works by connecting our high-level JS code to the low-level operating system using a few key layers.
+
+JavaScript Engine (V8):
+This is the same engine used in the Chrome browser.
+Its only job is to read your JavaScript code and turn it into machine code that the computer processor can understand.
+It runs on a single thread.
+
+Node.js Core APIs:
+These are the built-in modules we use every day, like fs (for files), http (for servers), and path.
+They give us JavaScript functions to do things that usually require system access.
+
+Native bindings:
+JavaScript can't talk directly to C++ code or hardware.
+Bindings are like translators. They wrap the low-level C++ libraries and expose them to JavaScript so V8 can use them.
+
+libuv:
+This is the library that makes Node.js asynchronous.
+Since V8 is single-threaded, it can't handle multiple tasks at once. libuv handles all the background work (like reading files) and tells V8 when the work is done.
+
+Event Loop:
+This is the mechanism that keeps checking if there are tasks to do. It manages the flow of operations.
+
+2. libuv
+What is libuv?
+libuv is a C library built specifically for Node.js. It connects Node.js to the operating system (Windows, Mac, or Linux) and handles all the asynchronous "non-blocking" behavior.
+
+Why Node.js needs libuv
+Node.js runs on a single main thread. If it tried to do heavy tasks (like reading a huge file) on that main thread, the whole app would freeze and stop working. Node.js needs libuv to take those heavy tasks and run them in the background so the main thread stays free.
+
+Responsibilities of libuv
+Event Loop: It runs the loop that checks queues and executes callbacks.
+Thread Pool: It manages the background threads for heavy tasks.
+File System: It handles reading and writing files.
+Network: It handles internet connections (TCP/UDP).
+
+3. Thread Pool
+What is a thread pool?
+The thread pool is a group of 4 extra threads (by default) that libuv creates in the background. These are separate from the main execution thread.
+Why Node.js uses a thread pool
+The operating system can handle some tasks (like network requests) easily. But for other things—like File I/O or heavy encryption—the OS can't do them asynchronously. Node.js uses the thread pool to run these specific hard tasks so they don't block the main code.
+Which operations are handled by the thread pool
+The thread pool is only used for tasks that represent "expensive" operations:
+File Operations: (fs.readFile, fs.writeFile).
+
+Cryptography: (crypto.pbkdf2, hashing passwords).
+Compression: (zlib for zipping files).
+DNS: (dns.lookup to find IP addresses).
+
+4. Worker Threads
+What are worker threads?
+Worker threads let you create your own separate threads to run JavaScript code in parallel. Unlike the Thread Pool (which is internal and C++), Worker Threads run your JS code.
+Why are worker threads needed?
+Node.js is great for I/O (handling requests), but bad at CPU tasks (heavy math, image processing). If you run a heavy loop on the main thread, the server blocks. Worker threads fix this by letting you run that heavy loop on a different thread.
+
+Difference between thread pool and worker threads
+Thread Pool: Managed by Node.js automatically. It runs C++ code for system tasks (Files, Crypto).
+Worker Threads: Managed by you (the developer). It runs JavaScript code for your heavy logic.
+
+5. Event Loop Queues
+The Event Loop doesn't treat all tasks the same. It uses two main queues with different priorities.
+
+Micro Task Queue
+This is the high-priority queue. Tasks here run immediately after the current code finishes.
+Priority: High.
+Examples:
+process.nextTick() (Runs first).
+Promise.then() (Promises).
+Macro Task Queue
+This is the standard queue. The Event Loop processes these one by one.
+Priority: Normal.
+Examples:
+setTimeout().
+setInterval().
+setImmediate().
