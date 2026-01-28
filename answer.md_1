@@ -1,0 +1,45 @@
+1. What is Schema Design and what does a Database Schema represent?
+Schema Design is the architectural phase of database development where the logical structure of the data is planned out before any data is actually stored. It acts as the blueprint for how data will be organized, connected, and accessed.
+A Database Schema represents the collection of all structural definitions in the database. It includes:
+Tables: The containers for specific entities (like Users or Orders).
+Columns (Fields): The attributes of those entities (like Username or OrderDate).
+Relationships: The links between tables (Primary and Foreign Keys).
+Constraints: The rules governing data validity.
+
+2. Why is Schema Design required before writing backend code?
+Schema design is the foundation upon which backend code is built. It is required first because:
+Code Dependency: Backend models (classes) and API endpoints usually mirror the database structure. Writing code without a defined schema is like building a house without a floor plan.
+Cost of Change: Modifying a database schema after the application is live is difficult and risky. It often requires complex data migrations and rewriting significant portions of the backend logic.
+Requirement Clarity: Designing the schema forces developers to define exactly what data is needed and how it relates, clearing up ambiguity before coding begins.
+
+3. How does poor schema design impact data consistency, maintenance, and scalability?
+Data Consistency: Poor design (specifically lack of normalization) leads to data redundancy. If a user's email is stored in three different tables, updating it in only one place leaves the data inconsistent (contradictory).
+Maintenance: A bad schema often requires complex, convoluted SQL queries to fetch simple data. This makes the codebase harder to read, harder to debug, and harder for new developers to understand.
+Scalability: If data is not properly distributed or indexed, or if tables are too wide (too many columns), query performance will degrade rapidly as the dataset grows. A query that works for 100 users might crash the system with 100,000 users.
+
+4. What are validations in schema design and why are they enforced?
+Validations (or constraints) are rules set at the database level to ensure Data Integrity. They act as a safety net, ensuring that even if the application code has a bug, the database will reject invalid data.
+NOT NULL: Ensures a column cannot be empty (e.g., A user must have a password).
+UNIQUE: Ensures no duplicates exist in a column (e.g., Two users cannot have the same email address).
+DEFAULT: Provides a value if none is given (e.g., Setting is_active to true automatically upon sign-up).
+PRIMARY KEY: Uniquely identifies a specific row in a table, ensuring every record is distinct and retrievable.
+
+5. What is the difference between a Database Schema and a Database Table?
+Database Schema: This is the container or the overall logical plan. It is the collection of all tables, views, and relationships. It is the "City Map."
+Database Table: This is a component within the schema. It is a structure of rows and columns dedicated to storing data about a specific subject. It is a "Building" on the map.
+
+6. Why should a table represent only one entity?
+A table should follow the Single Responsibility Principle. It should focus on one "noun" (e.g., Students table, Courses table).
+If a table represents multiple entities (e.g., mixing Student details inside the Courses table), it creates redundancy.
+This makes updates difficult; if a student changes their phone number, you would have to update every course record associated with them, rather than just one record in a Students table.
+
+7. Why should redundant or derived data be avoided?
+Redundant Data: Repeating data wastes storage and creates "update anomalies" where data becomes out of sync (inconsistent).
+Derived Data: This is data calculated from other fields (e.g., storing Age when you already have Date_of_Birth). Derived data should be avoided because it becomes "stale" immediately. If you store Age: 20, it becomes incorrect on the user's next birthday. It is better to calculate this value dynamically in the code.
+
+8. The importance of choosing correct data types
+Choosing the right data type (e.g., Integer vs. String) is critical for:
+Storage: Using the correct size minimizes disk usage (e.g., not using a massive text field to store a 5-digit zip code).
+Performance: Databases can process and index native types (like dates and numbers) much faster than generic text.
+
+Validation: It restricts bad data. If a column is defined as a DATE, the database will automatically reject nonsensical inputs like "Hello World," preventing application errors down the line.
